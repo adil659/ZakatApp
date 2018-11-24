@@ -27,17 +27,19 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     TextView mTextView;
     ListView listView;
     PaymentItemsAdapter paymentItemsAdapter;
-    ArrayMap<String, Boolean> arrayMapAsset;
+    //ArrayMap<String, Boolean> arrayMapAsset;
+    ArrayList<EditablePair<String, Boolean>> arrayMapAsset;
+
 
     public AssetsFragment() {
-        arrayMapAsset = new ArrayMap<>();
-        arrayMapAsset.put("Cash", true);
-        arrayMapAsset.put("Gold(g)", true);
-        arrayMapAsset.put("Silver(g)", true);
-        arrayMapAsset.put("Shares", false);
-        arrayMapAsset.put("Business Assets", false);
-        arrayMapAsset.put("Investment Properties", false);
-        arrayMapAsset.put("Anything else", false);
+        arrayMapAsset = new ArrayList<>();
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Cash", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Gold(g)", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Silver(g)", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Shares", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Business Assets", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Investment Properties", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Anything else", false));
     }
 
     @Override
@@ -59,8 +61,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
         paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
         for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.keyAt(i);
-            if (arrayMapAsset.get(string)) {
+            String string = arrayMapAsset.get(i).getKey();
+            if (arrayMapAsset.get(i).getValue()) {
                 paymentItemsAdapter.addPayment(string);
             }
         }
@@ -82,8 +84,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                     Intent intent = new Intent(getContext(), AddNewItemActivity.class);
                     ArrayList<String> tmp = new ArrayList<>();
                     for (int i=0; i<arrayMapAsset.size(); i++) {
-                        String string = arrayMapAsset.keyAt(i);
-                        if (!arrayMapAsset.get(string)) {
+                        String string = arrayMapAsset.get(i).getKey();
+                        if (!arrayMapAsset.get(i).getValue()) {
                             tmp.add(string);
                         }
                     }
@@ -111,7 +113,12 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
             if (data != null) {
                 String sel = data.getStringExtra("selected");
                 Log.v("Liability", "updateREsult " + sel);
-                arrayMapAsset.put(sel, true);
+                //arrayMapAsset.add(new EditablePair<String, Boolean>(sel, true));
+                for (int i=0; i <arrayMapAsset.size(); i++) {
+                    if (arrayMapAsset.get(i).getKey().equals(sel)) {
+                        arrayMapAsset.get(i).setValue(true);
+                    }
+                }
                 updateAdapter();
             }
         }
@@ -120,8 +127,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     public void updateAdapter() {
         ArrayList<String> tmp = new ArrayList<>();
         for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.keyAt(i);
-            if (arrayMapAsset.get(string)) {
+            String string = arrayMapAsset.get(i).getKey();
+            if (arrayMapAsset.get(i).getValue()) {
                 tmp.add(string);
             }
         }
@@ -129,7 +136,23 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         listView.invalidate();
     }
 
-    public void calculate() {
+    public double calculate(double goldPrice, double silverPrice) {
 
+        int certainOuncesOfGold = 3;
+        double nisaabValue = goldPrice * certainOuncesOfGold;
+        double totalAssets = totalAssets();
+
+        if (totalAssets < nisaabValue) {
+            return 0;
+        }
+
+        return totalAssets;
+    }
+
+    public double totalAssets() {
+        for (int i=0; i<paymentItemsAdapter.getArrayListSize(); i++) {
+
+        }
+        return 0;
     }
 }

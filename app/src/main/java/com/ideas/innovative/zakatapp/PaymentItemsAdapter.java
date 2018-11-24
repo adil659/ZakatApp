@@ -57,8 +57,11 @@ public class PaymentItemsAdapter extends ArrayAdapter {
                 Log.v("AdapterLog", "answerBox focus " + hasFocus);
                 if (!hasFocus) {
                     int pos = ((EditTextListView)v).getPosition();
-                     String text = ((EditTextListView)v).getText().toString();
-                     answerBoxes.add(pos,text);
+                    String text = ((EditTextListView)v).getText().toString();
+                    Log.v("AdapterLog", "answerBox " + pos + " string " + text);
+
+                    answerBoxes.set(pos,text);
+                    //answerBoxes.set()
                 }
 
             }

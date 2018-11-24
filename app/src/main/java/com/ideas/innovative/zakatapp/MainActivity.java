@@ -43,11 +43,14 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class MainActivity extends AppCompatActivity {
 
-    final static String BASE_URL = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD?";
+    final static String BASE_URL = "https://www.quandl.com/api/v3/datasets/LBMA/";
+    final static String GOLD = "GOLD";
+    final static String SILVER = "SILVER";
     final static String START_DATE = "start_date=";
     final static String END_DATE = "end_date=";
     final static String API_KEY = "api_key=EhkfvazyLhnSSAVAM2qj";
     final static String AMPERSAND = "&";
+    final static String QUESTION_MARK = "?";
 
     GoldDataSet mDataset;
     EditText goldEditText;
@@ -88,9 +91,11 @@ public class MainActivity extends AppCompatActivity {
         String date1 =  simpleDateFormat.format(date);
        // String url = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD?start_date=" + date1
         // + "&end_date=" + date1 + "&api_key=EhkfvazyLhnSSAVAM2qj";
-        String easyUrl = BASE_URL + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
+        String goldUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
                 AMPERSAND + API_KEY;
-        makeApiCall(easyUrl);
+        String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
+                AMPERSAND + API_KEY;
+        makeApiCall(goldUrl);
 
     }
 
@@ -103,8 +108,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickCalculate(View view) {
-        mAssetsFragment.calculate();
-        mLiabilitiesFragment.calculate();
+        double goldPrice=4;
+        double silverPrice=4;
+        double totalAssets = mAssetsFragment.calculate(goldPrice, silverPrice);
+        double totalLiabilities = mLiabilitiesFragment.calculate();
     }
 
     private void makeApiCall (String url) {
@@ -147,11 +154,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else {
                             //mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                             String.valueOf(mDataset.dataset.data.get(0).get(1));
                         }
                     }
                 }
             }
         });
+
     }
 
 }

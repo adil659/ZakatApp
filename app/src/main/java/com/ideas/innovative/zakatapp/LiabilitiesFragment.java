@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,21 +28,21 @@ import java.util.Map;
 public class LiabilitiesFragment extends android.support.v4.app.Fragment {
 
     PaymentItemsAdapter paymentItemsAdapter;
-    android.support.v4.util.ArrayMap<String, Boolean> arrayMap;
+    //android.support.v4.util.ArrayMap<String, Boolean> arrayMap;
     ListView listView;
+    ArrayList<EditablePair<String, Boolean>> arrayMap;
 
     public LiabilitiesFragment() {
-        arrayMap = new android.support.v4.util.ArrayMap<>();
-        arrayMap.put("Rent", true);
-        arrayMap.put("Personal Living Expenses", true);
-        arrayMap.put("Utilities", true);
-        arrayMap.put("School Debt", false);
-        arrayMap.put("Loan", false);
-        arrayMap.put("Bonds", false);
-        arrayMap.put("Business Liabilities", false);
-
+        //arrayMap = new android.support.v4.util.ArrayMap<>();
+        arrayMap = new ArrayList<>();
+        arrayMap.add(new EditablePair<String, Boolean>("Rent", true));
+        arrayMap.add(new EditablePair<String, Boolean>("Personal Living Expenses", true));
+        arrayMap.add(new EditablePair<String, Boolean>("Utilities", true));
+        arrayMap.add(new EditablePair<String, Boolean>("School Debt", false));
+        arrayMap.add(new EditablePair<String, Boolean>("Loan", false));
+        arrayMap.add(new EditablePair<String, Boolean>("Bonds", false));
+        arrayMap.add(new EditablePair<String, Boolean>("Business Liabilities", false));
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,8 +65,8 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
     private void setupLiabilitiesAdapter(ListView listView, ArrayList<String> answers) {    // YOU CAN ADD MORE PAGES FROM HERE
         paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
         for (int i=0; i<arrayMap.size(); i++) {
-            String string = arrayMap.keyAt(i);
-            if (arrayMap.get(string)) {
+            String string = arrayMap.get(i).getKey();
+            if (arrayMap.get(i).value) {
                 paymentItemsAdapter.addPayment(string);
             }
             if (answers != null) {
@@ -86,8 +87,8 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                     Intent intent = new Intent(getContext(), AddNewItemActivity.class);
                     ArrayList<String> tmp = new ArrayList<>();
                     for (int i=0; i<arrayMap.size(); i++) {
-                        String string = arrayMap.keyAt(i);
-                        if (!arrayMap.get(string)) {
+                        String string = arrayMap.get(i).getKey();
+                        if (!arrayMap.get(i).getValue()) {
                             tmp.add(string);
                         }
                     }
@@ -111,8 +112,8 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
     public void updateAdapter() {
         ArrayList<String> tmp = new ArrayList<>();
         for (int i=0; i<arrayMap.size(); i++) {
-            String string = arrayMap.keyAt(i);
-            if (arrayMap.get(string)) {
+            String string = arrayMap.get(i).getKey();
+            if (arrayMap.get(i).getValue()) {
                 tmp.add(string);
             }
         }
@@ -127,7 +128,14 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
             if (data != null) {
                 String sel = data.getStringExtra("selected");
                 Log.v("Liability", "updateREsult " + sel);
-                arrayMap.put(sel, true);
+                //arrayMap.add(new EditablePair<>(sel, true));
+                for (int i=0; i <arrayMap.size(); i++) {
+                    if (arrayMap.get(i).getKey().equals(sel)) {
+                        arrayMap.get(i).setValue(true);
+                    }
+                }
+                //paymentItemsAdapter.addPayment;
+                paymentItemsAdapter.addAnswers("");
                 updateAdapter();
             }
         }
@@ -139,9 +147,13 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public void calculate() {
+    public double calculate() {
+        double totalLiabilities = calculateLiabilities();
+        return totalLiabilities;
+    }
 
-
+    public double calculateLiabilities() {
+        return 0;
     }
 }
 /*
