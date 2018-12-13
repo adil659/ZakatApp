@@ -29,6 +29,7 @@ public class PaymentItemsAdapter extends ArrayAdapter {
     Context mContext;
     ArrayList<String> arrayList = new ArrayList<>();
     ArrayList<String> answerBoxes = new ArrayList<>();
+    ArrayList<EditablePair<String, String>> items = new ArrayList<>();
     public PaymentItemsAdapter(@NonNull Context context, int resource) {
         super(context, resource);
         mContext = context;
@@ -37,7 +38,7 @@ public class PaymentItemsAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.payment_item, parent, false);
 
         if(position == arrayList.size()) {
@@ -61,6 +62,7 @@ public class PaymentItemsAdapter extends ArrayAdapter {
                     Log.v("AdapterLog", "answerBox " + pos + " string " + text);
 
                     answerBoxes.set(pos,text);
+                    //items.get(pos).setValue(text);
                     //answerBoxes.set()
                 }
 
@@ -80,8 +82,9 @@ public class PaymentItemsAdapter extends ArrayAdapter {
         return arrayList.size() +1;
     }
 
-    public void addPayment (String string){
+    public void addPayment (String string, String answer){
         arrayList.add(string);
+        //items.add(new EditablePair<String, String>(string, answer));
         answerBoxes.add("");
     }
 

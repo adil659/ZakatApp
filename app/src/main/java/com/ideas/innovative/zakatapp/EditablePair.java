@@ -16,7 +16,7 @@ public class EditablePair<K, V>  {
         value = second;
     }
 
-    public void setFirst (K f) {
+    public void setKey (K f) {
         this.key = f;
     }
 

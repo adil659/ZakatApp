@@ -33,15 +33,14 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
     ArrayList<EditablePair<String, Boolean>> arrayMap;
 
     public LiabilitiesFragment() {
-        //arrayMap = new android.support.v4.util.ArrayMap<>();
         arrayMap = new ArrayList<>();
-        arrayMap.add(new EditablePair<String, Boolean>("Rent", true));
-        arrayMap.add(new EditablePair<String, Boolean>("Personal Living Expenses", true));
-        arrayMap.add(new EditablePair<String, Boolean>("Utilities", true));
-        arrayMap.add(new EditablePair<String, Boolean>("School Debt", false));
-        arrayMap.add(new EditablePair<String, Boolean>("Loan", false));
-        arrayMap.add(new EditablePair<String, Boolean>("Bonds", false));
-        arrayMap.add(new EditablePair<String, Boolean>("Business Liabilities", false));
+        arrayMap.add(new EditablePair<>("Rent", true));
+        arrayMap.add(new EditablePair<>("Personal Living Expenses", true));
+        arrayMap.add(new EditablePair<>("Utilities", true));
+        arrayMap.add(new EditablePair<>("School Debt", false));
+        arrayMap.add(new EditablePair<>("Loan", false));
+        arrayMap.add(new EditablePair<>("Bonds", false));
+        arrayMap.add(new EditablePair<>("Business Liabilities", false));
     }
 
     @Override
@@ -67,7 +66,7 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
         for (int i=0; i<arrayMap.size(); i++) {
             String string = arrayMap.get(i).getKey();
             if (arrayMap.get(i).value) {
-                paymentItemsAdapter.addPayment(string);
+                paymentItemsAdapter.addPayment(string, "");
             }
             if (answers != null) {
                // paymentItemsAdapter.addAnswers(answers.get(i));
@@ -153,7 +152,19 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
     }
 
     public double calculateLiabilities() {
-        return 0;
+        int total =0;
+        for (int i=0; i<paymentItemsAdapter.getArrayListSize(); i++) {
+            if(arrayMap.get(i).getValue()) {
+                String string = arrayMap.get(i).getKey();
+                int pos = paymentItemsAdapter.arrayList.indexOf(string);
+                String value = paymentItemsAdapter.answerBoxes.get(pos);
+                if(!value.isEmpty()) {
+                    int actualValue = Integer.valueOf(value);
+                    total += actualValue;
+                }
+            }
+        }
+            return total;
     }
 }
 /*

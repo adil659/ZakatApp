@@ -66,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar); //
+        Toolbar toolbar = findViewById(R.id.toolbar); // Toolbar setup
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, //Nav drawer setup
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -80,22 +80,23 @@ public class MainActivity extends AppCompatActivity {
         goldEditText = findViewById(R.id.inputGold);
 
         mAssetsFragment  = new AssetsFragment();
-        mLiabilitiesFragment  = new LiabilitiesFragment();
+        mLiabilitiesFragment  = new LiabilitiesFragment(); // creating instances of fragments
         mCalculateFragment = new CalculateFragment();
 
         setupViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager); // setting up adapter for fragments
 
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); // get todays date and make it in this format
         String date1 =  simpleDateFormat.format(date);
-       // String url = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD?start_date=" + date1
-        // + "&end_date=" + date1 + "&api_key=EhkfvazyLhnSSAVAM2qj";
-        String goldUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
+
+        String goldUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // gold API call
                 AMPERSAND + API_KEY;
-        String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
+
+        String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // silver API call
                 AMPERSAND + API_KEY;
-        makeApiCall(goldUrl);
+
+        makeApiCall(goldUrl); //fetch data how to return value from listener
 
     }
 
@@ -110,8 +111,17 @@ public class MainActivity extends AppCompatActivity {
     public void clickCalculate(View view) {
         double goldPrice=4;
         double silverPrice=4;
-        double totalAssets = mAssetsFragment.calculate(goldPrice, silverPrice);
-        double totalLiabilities = mLiabilitiesFragment.calculate();
+
+        double totalAssets = mAssetsFragment.calculate(goldPrice, silverPrice); // get total assets
+        double totalLiabilities = mLiabilitiesFragment.calculate(); // get total liabilities
+
+        if (totalAssets == 0) {
+           mCalculateFragment.calculateResult("No", "0");
+        }
+        else {
+            double amount = totalAssets - totalLiabilities;
+            mCalculateFragment.calculateResult("yes", String.valueOf(amount));
+        }
     }
 
     private void makeApiCall (String url) {
