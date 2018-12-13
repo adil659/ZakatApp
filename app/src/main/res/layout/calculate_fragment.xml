@@ -7,8 +7,40 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/zakatEligible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.573"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.136" />
+
+    <TextView
+        android:id="@+id/zakatAmount"
+        android:layout_width="189dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.409" />
+
+    <TextView
         android:id="@+id/textView"
-        android:layout_width="198dp"
+        android:layout_width="155dp"
         android:layout_height="59dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -25,7 +57,7 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="198dp"
+        android:layout_width="151dp"
         android:layout_height="59dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"

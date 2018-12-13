@@ -2,6 +2,7 @@ package com.ideas.innovative.zakatapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -27,17 +28,22 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     TextView mTextView;
     ListView listView;
     PaymentItemsAdapter paymentItemsAdapter;
-    ArrayMap<String, Boolean> arrayMapAsset;
+    //ArrayMap<String, Boolean> arrayMapAsset;
+    ArrayList<EditablePair<String, Boolean>> arrayMapAsset;
+
+    double goldValue=0;
+    double silverValue=0;
+
 
     public AssetsFragment() {
-        arrayMapAsset = new ArrayMap<>();
-        arrayMapAsset.put("Cash", true);
-        arrayMapAsset.put("Gold(g)", true);
-        arrayMapAsset.put("Silver(g)", true);
-        arrayMapAsset.put("Shares", false);
-        arrayMapAsset.put("Business Assets", false);
-        arrayMapAsset.put("Investment Properties", false);
-        arrayMapAsset.put("Anything else", false);
+        arrayMapAsset = new ArrayList<>();
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Cash", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Gold(g)", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Silver(g)", true));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Shares", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Business Assets", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Investment Properties", false));
+        arrayMapAsset.add(new EditablePair<String, Boolean>("Anything else", false));
     }
 
     @Override
@@ -49,8 +55,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.liability_fragment,container,false);
-        mGoldEditText = view.findViewById(R.id.inputGold);
-        mTextView = view.findViewById(R.id.gold);
+        //mGoldEditText = view.findViewById(R.id.inputGold);
+       // mTextView = view.findViewById(R.id.gold);
         listView = view.findViewById(R.id.listView);
         setupLiabilitiesAdapter(listView);
         return view;
@@ -59,9 +65,9 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
         paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
         for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.keyAt(i);
-            if (arrayMapAsset.get(string)) {
-                paymentItemsAdapter.addPayment(string);
+            String string = arrayMapAsset.get(i).getKey();
+            if (arrayMapAsset.get(i).getValue()) {
+                paymentItemsAdapter.addPayment(string, "");
             }
         }
 
@@ -82,8 +88,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                     Intent intent = new Intent(getContext(), AddNewItemActivity.class);
                     ArrayList<String> tmp = new ArrayList<>();
                     for (int i=0; i<arrayMapAsset.size(); i++) {
-                        String string = arrayMapAsset.keyAt(i);
-                        if (!arrayMapAsset.get(string)) {
+                        String string = arrayMapAsset.get(i).getKey();
+                        if (!arrayMapAsset.get(i).getValue()) {
                             tmp.add(string);
                         }
                     }
@@ -111,7 +117,13 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
             if (data != null) {
                 String sel = data.getStringExtra("selected");
                 Log.v("Liability", "updateREsult " + sel);
-                arrayMapAsset.put(sel, true);
+                //arrayMapAsset.add(new EditablePair<String, Boolean>(sel, true));
+                for (int i=0; i <arrayMapAsset.size(); i++) {
+                    if (arrayMapAsset.get(i).getKey().equals(sel)) {
+                        arrayMapAsset.get(i).setValue(true);
+                    }
+                }
+                paymentItemsAdapter.addAnswers("");
                 updateAdapter();
             }
         }
@@ -120,8 +132,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     public void updateAdapter() {
         ArrayList<String> tmp = new ArrayList<>();
         for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.keyAt(i);
-            if (arrayMapAsset.get(string)) {
+            String string = arrayMapAsset.get(i).getKey();
+            if (arrayMapAsset.get(i).getValue()) {
                 tmp.add(string);
             }
         }
@@ -129,7 +141,50 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         listView.invalidate();
     }
 
-    public void calculate() {
+    public double calculate(double goldPrice, double silverPrice) {
 
+        int certainOuncesOfGold = 3;
+        double nisaabValue = goldValue * certainOuncesOfGold;
+        double totalAssets = totalAssets();
+
+        if (totalAssets < nisaabValue) {
+            return 0;
+        }
+
+        return totalAssets;
+    }
+
+    public double totalAssets() {
+        int total =0;
+        for (int i=0; i<paymentItemsAdapter.getArrayListSize(); i++) {
+            if(arrayMapAsset.get(i).getValue()) {
+                String string = arrayMapAsset.get(i).getKey();
+                int pos = paymentItemsAdapter.arrayList.indexOf(string);
+                String value  = paymentItemsAdapter.answerBoxes.get(pos);
+                if (!value.isEmpty()) {
+                    int actualValue = Integer.valueOf(value);
+                    if (string.equals("Gold(g)")) {
+                        total += (actualValue * goldValue);
+
+                    } else if (string.equals("Silver(g)")) {
+                        total += (actualValue * silverValue);
+
+                    } else {
+                        total += actualValue;
+
+                    }
+                }
+
+            }
+
+
+        }
+        return total;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        // outState.putStringArrayList("answers", paymentItemsAdapter.answerBoxes);
+        super.onSaveInstanceState(outState);
     }
 }

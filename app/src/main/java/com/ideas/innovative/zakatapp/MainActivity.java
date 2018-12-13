@@ -43,11 +43,14 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class MainActivity extends AppCompatActivity {
 
-    final static String BASE_URL = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD?";
+    final static String BASE_URL = "https://www.quandl.com/api/v3/datasets/LBMA/";
+    final static String GOLD = "GOLD";
+    final static String SILVER = "SILVER";
     final static String START_DATE = "start_date=";
     final static String END_DATE = "end_date=";
     final static String API_KEY = "api_key=EhkfvazyLhnSSAVAM2qj";
     final static String AMPERSAND = "&";
+    final static String QUESTION_MARK = "?";
 
     GoldDataSet mDataset;
     EditText goldEditText;
@@ -63,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar); //
+        Toolbar toolbar = findViewById(R.id.toolbar); // Toolbar setup
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, //Nav drawer setup
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -77,20 +80,23 @@ public class MainActivity extends AppCompatActivity {
         goldEditText = findViewById(R.id.inputGold);
 
         mAssetsFragment  = new AssetsFragment();
-        mLiabilitiesFragment  = new LiabilitiesFragment();
+        mLiabilitiesFragment  = new LiabilitiesFragment(); // creating instances of fragments
         mCalculateFragment = new CalculateFragment();
 
         setupViewPager(viewPager);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager); // setting up adapter for fragments
 
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); // get todays date and make it in this format
         String date1 =  simpleDateFormat.format(date);
-       // String url = "https://www.quandl.com/api/v3/datasets/LBMA/GOLD?start_date=" + date1
-        // + "&end_date=" + date1 + "&api_key=EhkfvazyLhnSSAVAM2qj";
-        String easyUrl = BASE_URL + START_DATE + date1 + AMPERSAND + END_DATE + date1 +
+
+        String goldUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // gold API call
                 AMPERSAND + API_KEY;
-        makeApiCall(easyUrl);
+
+        String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // silver API call
+                AMPERSAND + API_KEY;
+
+        makeApiCall(goldUrl); //fetch data how to return value from listener
 
     }
 
@@ -103,8 +109,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickCalculate(View view) {
-        mAssetsFragment.calculate();
-        mLiabilitiesFragment.calculate();
+        double goldPrice=4;
+        double silverPrice=4;
+
+        double totalAssets = mAssetsFragment.calculate(goldPrice, silverPrice); // get total assets
+        double totalLiabilities = mLiabilitiesFragment.calculate(); // get total liabilities
+
+        if (totalAssets == 0) {
+           mCalculateFragment.calculateResult("No", "0");
+        }
+        else {
+            double amount = totalAssets - totalLiabilities;
+            mCalculateFragment.calculateResult("yes", String.valueOf(amount));
+        }
     }
 
     private void makeApiCall (String url) {
@@ -147,11 +164,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else {
                             //mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                             String.valueOf(mDataset.dataset.data.get(0).get(1));
                         }
                     }
                 }
             }
         });
+
     }
 
 }
