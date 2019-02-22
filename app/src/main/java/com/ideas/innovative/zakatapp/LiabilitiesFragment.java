@@ -158,13 +158,17 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                 String string = arrayMap.get(i).getKey();
                 int pos = paymentItemsAdapter.arrayList.indexOf(string);
                 String value = paymentItemsAdapter.answerBoxes.get(pos);
+                Log.v("Rainbow", "Liability item" + string + " position " + pos) ;
+
                 if(!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     total += actualValue;
+                    Log.v("Rainbow", "Liability " + string + " " + actualValue);
                 }
             }
         }
-            return total;
+        Log.v("Rainbow", "Total Liability " + total);
+        return total;
     }
 }
 /*

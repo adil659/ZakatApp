@@ -1,5 +1,6 @@
 package com.ideas.innovative.zakatapp;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,8 +32,16 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     //ArrayMap<String, Boolean> arrayMapAsset;
     ArrayList<EditablePair<String, Boolean>> arrayMapAsset;
 
-    double goldValue=0;
-    double silverValue=0;
+    double mGoldValue=0;
+    double mSilverValue=0;
+
+    String mGoldCurrentMonth;
+    String mGoldCurrentDay;
+    String mGoldCurrentYear;
+
+    String mSilverCurrentMonth;
+    String mSilverCurrentDay;
+    String mSilverCurrentYear;
 
 
     public AssetsFragment() {
@@ -59,7 +68,44 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
        // mTextView = view.findViewById(R.id.gold);
         listView = view.findViewById(R.id.listView);
         setupLiabilitiesAdapter(listView);
+
         return view;
+    }
+
+    public void setupListeners() {
+        if(paymentItemsAdapter != null) {
+            paymentItemsAdapter.mGoldImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("The price of gold as of " + mGoldCurrentDay + " " +
+                            mGoldCurrentMonth + ", " + mGoldCurrentYear + "\n is " + mGoldValue + "/g")
+                            .setTitle("Gold");
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+            });
+        }
+
+        if (paymentItemsAdapter != null ) {
+            paymentItemsAdapter.mSilverImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                    builder.setMessage("The price of silver as of " + mSilverCurrentDay + " " +
+                            mSilverCurrentMonth + ", " + mSilverCurrentYear + "\n is " + mSilverValue + "/g")
+                            .setTitle("Silver");
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+            });
+        }
+
     }
 
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
@@ -76,7 +122,16 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     }
 
     public void setGoldValue(String goldValue) {
-        mTextView.append("\n($" + goldValue + "/oz)");
+        //mTextView.append("\n($" + goldValue + "/oz)");
+        mGoldValue = Double.valueOf(goldValue);
+        paymentItemsAdapter.mGoldValue = Double.valueOf(goldValue);
+    }
+
+    public void setSilverValue(String silverValue) {
+        //mTextView.append("\n($" + goldValue + "/oz)");
+        mSilverValue = Double.valueOf(silverValue);
+        paymentItemsAdapter.mSilverValue = Double.valueOf(silverValue);
+
     }
 
     public void setOnItemSelectedListener(ListView listView) {
@@ -144,7 +199,7 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     public double calculate(double goldPrice, double silverPrice) {
 
         int certainOuncesOfGold = 3;
-        double nisaabValue = goldValue * certainOuncesOfGold;
+        double nisaabValue = mGoldValue * certainOuncesOfGold;
         double totalAssets = totalAssets();
 
         if (totalAssets < nisaabValue) {
@@ -164,21 +219,23 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                 if (!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     if (string.equals("Gold(g)")) {
-                        total += (actualValue * goldValue);
+                        Log.v("Rainbow", "we got gold(g)" + actualValue + " mGoldValue " + mGoldValue);
+                        total += (actualValue * mGoldValue);
 
                     } else if (string.equals("Silver(g)")) {
-                        total += (actualValue * silverValue);
+                        total += (actualValue * mGoldValue);
+                        Log.v("Rainbow", "we got silver(g)" + actualValue);
 
                     } else {
                         total += actualValue;
+                        Log.v("Rainbow", "Asset " + string + " " + actualValue);
+
 
                     }
                 }
-
             }
-
-
         }
+        Log.v("Rainbow", "Total Assets" + total);
         return total;
     }
 

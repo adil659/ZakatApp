@@ -31,9 +31,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 import okhttp3.OkHttpClient;
@@ -53,11 +55,18 @@ public class MainActivity extends AppCompatActivity {
     final static String QUESTION_MARK = "?";
 
     GoldDataSet mDataset;
-    EditText goldEditText;
 
     AssetsFragment mAssetsFragment;
     LiabilitiesFragment mLiabilitiesFragment;
     CalculateFragment mCalculateFragment;
+
+
+    Calendar calendar = Calendar.getInstance();
+    Date date = calendar.getTime();
+    SimpleDateFormat monthformat = new SimpleDateFormat("MMMM");
+    SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+    SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); // get todays date and make it in this format
 
     ArrayMap<String, Boolean> arrayMapAsset;
 
@@ -75,19 +84,18 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        goldEditText = findViewById(R.id.inputGold);
-
         mAssetsFragment  = new AssetsFragment();
         mLiabilitiesFragment  = new LiabilitiesFragment(); // creating instances of fragments
         mCalculateFragment = new CalculateFragment();
 
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        //goldEditText = findViewById(R.id.inputGold);
+
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager); // setting up adapter for fragments
 
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); // get todays date and make it in this format
         String date1 =  simpleDateFormat.format(date);
 
         String goldUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // gold API call
@@ -96,7 +104,11 @@ public class MainActivity extends AppCompatActivity {
         String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // silver API call
                 AMPERSAND + API_KEY;
 
+        //mAssetsFragment.setupListeners();
+        Log.v("ApiCall", "date " + date1);
         makeApiCall(goldUrl); //fetch data how to return value from listener
+        makeApiCall(silverUrl);
+
 
     }
 
@@ -124,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void makeApiCall (String url) {
+    private void makeApiCall (final String url) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -141,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
+                Log.v("Are we here ", ", did we make it fail? ");
+
                 e.printStackTrace();
             }
 
@@ -148,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                 if( response.isSuccessful()) {
                     String string = response.body().string();
+                    Log.v("Are we here ", ", did we make it pass atleast? ");
+
 
                     Document document = Jsoup.parse(string);
                     Elements elements = document.select("code");
@@ -158,13 +174,55 @@ public class MainActivity extends AppCompatActivity {
 
                         if (mDataset.dataset.data.isEmpty()) {
                             String end_date = mDataset.dataset.end_date;
-                            String realUrl = BASE_URL + START_DATE + end_date + AMPERSAND + END_DATE +
-                                    end_date + AMPERSAND + API_KEY;
+                            Log.v("Are we here ", ", try again " + end_date);
+                            String realUrl = "";
+                            if(url.contains("GOLD")) {
+                                realUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + end_date + AMPERSAND + END_DATE +
+                                        end_date + AMPERSAND + API_KEY;
+                            }
+                            else if(url.contains("SILVER")) {
+                                realUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + end_date + AMPERSAND + END_DATE + end_date + // silver API call
+                                        AMPERSAND + API_KEY;
+                            }
                             makeApiCall(realUrl);
+                            Log.v("Are we here", "try again url " + realUrl);
+                            Log.v("Are we here ", ", did we make it here? ");
                         }
                         else {
-                            //mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
-                             String.valueOf(mDataset.dataset.data.get(0).get(1));
+                            Log.v("Which call", "url succeed [" + url + "] price [" + mDataset.dataset.data.get(0).get(1) + "]");
+                            if (url.contains("GOLD")) {
+                                mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                String.valueOf(mDataset.dataset.data.get(0).get(1));
+                                Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                String end_date = mDataset.dataset.end_date;
+                                Date newDate = null;
+                                try {
+                                    newDate = simpleDateFormat.parse(end_date);
+                                    mAssetsFragment.paymentItemsAdapter.mGoldCurrentDay = dayFormat.format(newDate);
+                                    mAssetsFragment.paymentItemsAdapter.mGoldCurrentMonth = monthformat.format(newDate);
+                                    mAssetsFragment.paymentItemsAdapter.mGoldCurrentYear = yearFormat.format(newDate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            else if (url.contains("SILVER")){
+                                Log.v("Are we here ", " Silver value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                mAssetsFragment.setSilverValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                String.valueOf(mDataset.dataset.data.get(0).get(1));
+                                Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                String end_date = mDataset.dataset.end_date;
+                                try {
+                                    Date newDate = simpleDateFormat.parse(end_date);
+                                    mAssetsFragment.paymentItemsAdapter.mSilverCurrentDay = dayFormat.format(newDate);
+                                    mAssetsFragment.paymentItemsAdapter.mSilverCurrentMonth = monthformat.format(newDate);
+                                    mAssetsFragment.paymentItemsAdapter.mSilverCurrentYear = yearFormat.format(newDate);
+
+                                    //mAssetsFragment.setupListeners();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 }
