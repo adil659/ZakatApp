@@ -1,6 +1,7 @@
 package com.ideas.innovative.zakatapp;
 
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -110,6 +112,16 @@ public class MainActivity extends AppCompatActivity {
         makeApiCall(silverUrl);
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.nav_FAQ:
+                Intent intent = new Intent(this, FrequentlyAskedQuestions.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager) {    // YOU CAN ADD MORE PAGES FROM HERE
