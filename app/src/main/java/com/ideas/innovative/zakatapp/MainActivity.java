@@ -4,6 +4,8 @@ package com.ideas.innovative.zakatapp;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -86,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        setupNavViewListener(navigationView);
+
         mAssetsFragment  = new AssetsFragment();
         mLiabilitiesFragment  = new LiabilitiesFragment(); // creating instances of fragments
         mCalculateFragment = new CalculateFragment();
@@ -114,14 +119,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.nav_FAQ:
-                Intent intent = new Intent(this, FrequentlyAskedQuestions.class);
-                startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
+    public void setupNavViewListener(NavigationView view) {
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.nav_faq:
+                        Intent intent = new Intent(getApplicationContext(), FrequentlyAskedQuestions.class);
+                        startActivity(intent);
+                }
+                return true;
+            }
+        });
     }
 
     private void setupViewPager(ViewPager viewPager) {    // YOU CAN ADD MORE PAGES FROM HERE
