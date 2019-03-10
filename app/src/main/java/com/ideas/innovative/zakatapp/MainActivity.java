@@ -2,8 +2,6 @@ package com.ideas.innovative.zakatapp;
 
 
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -13,15 +11,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.ArrayMap;
 import android.util.Log;
 
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,13 +33,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); // get todays date and make it in this format
 
-    ArrayMap<String, Boolean> arrayMapAsset;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPager viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        //goldEditText = findViewById(R.id.inputGold);
-
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager); // setting up adapter for fragments
@@ -111,12 +98,9 @@ public class MainActivity extends AppCompatActivity {
         String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // silver API call
                 AMPERSAND + API_KEY;
 
-        //mAssetsFragment.setupListeners();
         Log.v("ApiCall", "date " + date1);
         makeApiCall(goldUrl); //fetch data how to return value from listener
         makeApiCall(silverUrl);
-
-
     }
 
     public void setupNavViewListener(NavigationView view) {
@@ -142,10 +126,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickCalculate(View view) {
-        double goldPrice=4;
-        double silverPrice=4;
 
-        double totalAssets = mAssetsFragment.calculate(goldPrice, silverPrice); // get total assets
+        double totalAssets = mAssetsFragment.calculate(); // get total assets
         double totalLiabilities = mLiabilitiesFragment.calculate(); // get total liabilities
 
         if (totalAssets == 0) {
@@ -153,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             double amount = totalAssets - totalLiabilities;
-            mCalculateFragment.calculateResult("yes", String.valueOf(amount));
+            double zakatToPay = amount * 0.025;
+            mCalculateFragment.calculateResult("yes", String.valueOf(zakatToPay));
         }
     }
 
@@ -170,12 +153,13 @@ public class MainActivity extends AppCompatActivity {
         final Request request = new Request.Builder()
                 .url(url)
                 .build();
-
+        Log.v("MetalApi", "starting api call");
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
-                Log.v("Are we here ", ", did we make it fail? ");
 
+                Log.v("MetalApi", "Failure[" + e.getMessage() + "]");
+                Log.v("MetalApi", "Failure url[" + url + "]");
                 e.printStackTrace();
             }
 
@@ -183,8 +167,6 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                 if( response.isSuccessful()) {
                     String string = response.body().string();
-                    Log.v("Are we here ", ", did we make it pass atleast? ");
-
 
                     Document document = Jsoup.parse(string);
                     Elements elements = document.select("code");
@@ -195,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (mDataset.dataset.data.isEmpty()) {
                             String end_date = mDataset.dataset.end_date;
-                            Log.v("Are we here ", ", try again " + end_date);
+                            Log.v("MetalApi ", "trying again with new date[" + end_date + "]");
                             String realUrl = "";
                             if(url.contains("GOLD")) {
                                 realUrl = BASE_URL + GOLD + QUESTION_MARK + START_DATE + end_date + AMPERSAND + END_DATE +
@@ -206,15 +188,16 @@ public class MainActivity extends AppCompatActivity {
                                         AMPERSAND + API_KEY;
                             }
                             makeApiCall(realUrl);
-                            Log.v("Are we here", "try again url " + realUrl);
-                            Log.v("Are we here ", ", did we make it here? ");
+                            //Log.v("Are we here", "try again url " + realUrl);
+                            //Log.v("Are we here ", ", did we make it here? ");
                         }
                         else {
-                            Log.v("Which call", "url succeed [" + url + "] price [" + mDataset.dataset.data.get(0).get(1) + "]");
+                            //Log.v("Which call", "url succeed [" + url + "] price [" + mDataset.dataset.data.get(0).get(1) + "]");
                             if (url.contains("GOLD")) {
+                                Log.v("MetalApi", "gold succeeded price[" + mDataset.dataset.data.get(0).get(1) + "]");
                                 mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 String.valueOf(mDataset.dataset.data.get(0).get(1));
-                                Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                //Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 String end_date = mDataset.dataset.end_date;
                                 Date newDate = null;
                                 try {
@@ -228,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                             else if (url.contains("SILVER")){
-                                Log.v("Are we here ", " Silver value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
+                                Log.v("MetalApi", "silver succeeded price[" + mDataset.dataset.data.get(0).get(1) + "]");
+                                //Log.v("Are we here ", " Silver value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 mAssetsFragment.setSilverValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 String.valueOf(mDataset.dataset.data.get(0).get(1));
                                 Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
@@ -251,5 +235,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 }

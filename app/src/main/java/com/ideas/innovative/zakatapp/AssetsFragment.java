@@ -25,11 +25,8 @@ import java.util.ArrayList;
 
 public class AssetsFragment extends android.support.v4.app.Fragment {
 
-    EditText mGoldEditText;
-    TextView mTextView;
     ListView listView;
     PaymentItemsAdapter paymentItemsAdapter;
-    //ArrayMap<String, Boolean> arrayMapAsset;
     ArrayList<EditablePair<String, Boolean>> arrayMapAsset;
 
     double mGoldValue=0;
@@ -64,14 +61,12 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.liability_fragment,container,false);
-        //mGoldEditText = view.findViewById(R.id.inputGold);
-       // mTextView = view.findViewById(R.id.gold);
         listView = view.findViewById(R.id.listView);
         setupLiabilitiesAdapter(listView);
 
         return view;
     }
-
+/*
     public void setupListeners() {
         if(paymentItemsAdapter != null) {
             paymentItemsAdapter.mGoldImageView.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +102,7 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         }
 
     }
-
+*/
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
         paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
         for (int i=0; i<arrayMapAsset.size(); i++) {
@@ -122,16 +117,13 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     }
 
     public void setGoldValue(String goldValue) {
-        //mTextView.append("\n($" + goldValue + "/oz)");
         mGoldValue = Double.valueOf(goldValue);
         paymentItemsAdapter.mGoldValue = Double.valueOf(goldValue);
     }
 
     public void setSilverValue(String silverValue) {
-        //mTextView.append("\n($" + goldValue + "/oz)");
         mSilverValue = Double.valueOf(silverValue);
         paymentItemsAdapter.mSilverValue = Double.valueOf(silverValue);
-
     }
 
     public void setOnItemSelectedListener(ListView listView) {
@@ -196,16 +188,18 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         listView.invalidate();
     }
 
-    public double calculate(double goldPrice, double silverPrice) {
+    public double calculate() {
 
-        int certainOuncesOfGold = 3;
+        double certainOuncesOfGold = 3.0857662;
         double nisaabValue = mGoldValue * certainOuncesOfGold;
+        Log.v("Calculation", "nisaab value[" + nisaabValue + "]");
         double totalAssets = totalAssets();
 
         if (totalAssets < nisaabValue) {
+            Log.v("Calculation", "not eligible to pay zakat");
             return 0;
         }
-
+        Log.v("Calculation", "can pay zakat");
         return totalAssets;
     }
 
@@ -219,23 +213,31 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                 if (!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     if (string.equals("Gold(g)")) {
-                        Log.v("Rainbow", "we got gold(g)" + actualValue + " mGoldValue " + mGoldValue);
-                        total += (actualValue * mGoldValue);
+                        //Log.v("Rainbow", "we got gold(g)" + actualValue + " mGoldValue " + mGoldValue);
+                        double goldCalc = (actualValue / 28.35) * mGoldValue;
+                        Log.v("Calculation", "adding asset " + string + "[" + goldCalc + "]");
+                        total += goldCalc;
 
                     } else if (string.equals("Silver(g)")) {
-                        total += (actualValue * mGoldValue);
-                        Log.v("Rainbow", "we got silver(g)" + actualValue);
+                        double silverCalc = (actualValue / 28.35) * mSilverValue;
+                        Log.v("Calculation", "adding asset " + string + "[" + silverCalc + "]");
+
+                        total += silverCalc;
+
+                        //Log.v("Rainbow", "we got silver(g)" + actualValue);
 
                     } else {
                         total += actualValue;
-                        Log.v("Rainbow", "Asset " + string + " " + actualValue);
+                        Log.v("Calculation", "adding asset " + string + "[" + actualValue + "]");
+
+                        //Log.v("Rainbow", "Asset " + string + " " + actualValue);
 
 
                     }
                 }
             }
         }
-        Log.v("Rainbow", "Total Assets" + total);
+        Log.v("Calculation", "Total Asset[" + total + "]");
         return total;
     }
 
