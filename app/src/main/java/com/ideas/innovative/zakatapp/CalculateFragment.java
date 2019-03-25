@@ -30,7 +30,7 @@ public class CalculateFragment extends Fragment {
 
     public void calculateResult(String eligible, String amount) {
         zakatEligible.setText(eligible);
-        zakatAmount.setText(amount);
+        zakatAmount.setText("$" + amount);
     }
 
 

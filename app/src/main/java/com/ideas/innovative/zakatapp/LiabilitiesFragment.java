@@ -28,7 +28,6 @@ import java.util.Map;
 public class LiabilitiesFragment extends android.support.v4.app.Fragment {
 
     PaymentItemsAdapter paymentItemsAdapter;
-    //android.support.v4.util.ArrayMap<String, Boolean> arrayMap;
     ListView listView;
     ArrayList<EditablePair<String, Boolean>> arrayMap;
 
@@ -82,7 +81,6 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == paymentItemsAdapter.getArrayListSize()) {
-                    Log.v ("Hello", "1");
                     Intent intent = new Intent(getContext(), AddNewItemActivity.class);
                     ArrayList<String> tmp = new ArrayList<>();
                     for (int i=0; i<arrayMap.size(); i++) {
@@ -98,7 +96,6 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
 
                 }
                 else {
-                    Log.v ("Hello", "2");
                 }
             }
         });
@@ -133,7 +130,6 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                         arrayMap.get(i).setValue(true);
                     }
                 }
-                //paymentItemsAdapter.addPayment;
                 paymentItemsAdapter.addAnswers("");
                 updateAdapter();
             }
@@ -163,94 +159,13 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                 if(!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     total += actualValue;
-                    Log.v("Rainbow", "Liability " + string + " " + actualValue);
+                    //Log.v("Rainbow", "Liability " + string + " " + actualValue);
+                    Log.v("Calculation", "adding liability " + string + "[" + actualValue + "]");
+
                 }
             }
         }
-        Log.v("Rainbow", "Total Liability " + total);
+        Log.v("Calculation", "Total Liability[" + total + "]");
         return total;
     }
 }
-/*
-<!---
-<TextView
-        android:id="@+id/rentTextView"
-        android:layout_width="187dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="monospace"
-        android:gravity="center"
-        android:text="Rent"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.073"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.139" />
-
-    <EditText
-        android:id="@+id/rentEditText"
-        android:layout_width="133dp"
-        android:layout_height="50dp"
-        android:background="@drawable/rounded_button1"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.905"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
-
-    <TextView
-        android:id="@+id/personalTextView"
-        android:layout_width="187dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="monospace"
-        android:gravity="center"
-        android:text="Personal"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.088"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.343" />
-
-    <EditText
-        android:id="@+id/personalEditText"
-        android:layout_width="133dp"
-        android:layout_height="50dp"
-        android:background="@drawable/rounded_button1"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.904"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-
--!>
- */
-
- /*  paymentItemsAdapter.addPayment("Rent");
-        paymentItemsAdapter.addPayment("Personal");
-        paymentItemsAdapter.addPayment("Checking Account");
-        paymentItemsAdapter.addPayment("Savings Accounts");
-        */
-//  paymentItemsAdapter.addPayment("More...");

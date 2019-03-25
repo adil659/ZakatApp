@@ -115,24 +115,17 @@ public class PaymentItemsAdapter extends ArrayAdapter {
         editTextListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.v("AdapterLog", "answerBox focus " + hasFocus);
                 if (!hasFocus) {
                     int pos = ((EditTextListView)v).getPosition();
                     String text = ((EditTextListView)v).getText().toString();
-                    Log.v("AdapterLog", "answerBox " + pos + " string " + text);
 
                     answerBoxes.set(pos,text);
-                    //items.get(pos).setValue(text);
-                    //answerBoxes.set()
                 }
 
             }
         });
         textView.setText(arrayList.get(position));
         editTextListView.setText(answerBoxes.get(position));
-        //answerBoxes.add(position, answer);
-        //Log.v("AdapterLog", "answerBox " + editText.getText());
-        //editText.setText(editText.getText());
 
         return rowView;
     }
@@ -144,7 +137,6 @@ public class PaymentItemsAdapter extends ArrayAdapter {
 
     public void addPayment (String string, String answer){
         arrayList.add(string);
-        //items.add(new EditablePair<String, String>(string, answer));
         answerBoxes.add("");
     }
 
