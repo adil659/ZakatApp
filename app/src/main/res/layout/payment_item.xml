@@ -5,16 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/vanillaBrown">
+    android:background="@color/trial1">
 
     <ImageView
         android:id="@+id/info_image"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="@+id/answerBox"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,8 +28,8 @@
         android:id="@+id/itemName"
         android:layout_width="140dp"
         android:layout_height="72dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="TextView"
@@ -42,14 +42,14 @@
         android:id="@+id/answerBox"
         android:layout_width="188dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="4dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
         android:layout_weight="0.5"
         android:background="@drawable/rounded_button1"
         android:ems="10"
         android:gravity="center"
         android:hint="enter..."
-        android:inputType="textPersonName|numberDecimal"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
