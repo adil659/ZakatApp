@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:background="@color/colorPrimary" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
@@ -28,9 +28,10 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager"
-        android:layout_below="@id/appBarLayout"/>
+        android:layout_below="@id/appBarLayout"
+        android:background="@android:color/background_light" />
 
 </RelativeLayout>
