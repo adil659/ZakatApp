@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.ideas.innovative.zakatapp.GoldValueAPI.GoldDataSet;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Created by adil6 on 2018-10-27.
@@ -28,28 +29,21 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     ListView listView;
     PaymentItemsAdapter paymentItemsAdapter;
     ArrayList<EditablePair<String, Boolean>> arrayMapAsset;
+    Stack<String> currentAssets = new Stack<>();
+    static double mGoldValue=0;
+    static double mSilverValue=0;
 
-    double mGoldValue=0;
-    double mSilverValue=0;
-
-    String mGoldCurrentMonth;
-    String mGoldCurrentDay;
-    String mGoldCurrentYear;
-
-    String mSilverCurrentMonth;
-    String mSilverCurrentDay;
-    String mSilverCurrentYear;
 
 
     public AssetsFragment() {
         arrayMapAsset = new ArrayList<>();
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Cash", true));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Gold(g)", true));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Silver(g)", true));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Shares", false));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Business Assets", false));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Investment Properties", false));
-        arrayMapAsset.add(new EditablePair<String, Boolean>("Anything else", false));
+        arrayMapAsset.add(new EditablePair<>("Cash", true));
+        arrayMapAsset.add(new EditablePair<>("Gold(g)", true));
+        arrayMapAsset.add(new EditablePair<>("Silver(g)", true));
+        arrayMapAsset.add(new EditablePair<>("Shares", false));
+        arrayMapAsset.add(new EditablePair<>("Business Assets", false));
+        arrayMapAsset.add(new EditablePair<>("Investment Properties", false));
+        arrayMapAsset.add(new EditablePair<>("Anything else", false));
     }
 
     @Override
@@ -66,48 +60,13 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
 
         return view;
     }
-/*
-    public void setupListeners() {
-        if(paymentItemsAdapter != null) {
-            paymentItemsAdapter.mGoldImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("The price of gold as of " + mGoldCurrentDay + " " +
-                            mGoldCurrentMonth + ", " + mGoldCurrentYear + "\n is " + mGoldValue + "/g")
-                            .setTitle("Gold");
 
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-
-                }
-            });
-        }
-
-        if (paymentItemsAdapter != null ) {
-            paymentItemsAdapter.mSilverImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                    builder.setMessage("The price of silver as of " + mSilverCurrentDay + " " +
-                            mSilverCurrentMonth + ", " + mSilverCurrentYear + "\n is " + mSilverValue + "/g")
-                            .setTitle("Silver");
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-
-                }
-            });
-        }
-
-    }
-*/
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
         paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
         for (int i=0; i<arrayMapAsset.size(); i++) {
             String string = arrayMapAsset.get(i).getKey();
             if (arrayMapAsset.get(i).getValue()) {
+                currentAssets.add(string);
                 paymentItemsAdapter.addPayment(string, "");
             }
         }
@@ -146,9 +105,6 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                     setUpAddNewItem();
 
                 }
-                else {
-                    Log.v ("Hello", "2");
-                }
             }
         });
     }
@@ -167,6 +123,7 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                 //arrayMapAsset.add(new EditablePair<String, Boolean>(sel, true));
                 for (int i=0; i <arrayMapAsset.size(); i++) {
                     if (arrayMapAsset.get(i).getKey().equals(sel)) {
+                        currentAssets.add(sel);
                         arrayMapAsset.get(i).setValue(true);
                     }
                 }
@@ -178,28 +135,23 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
 
     public void updateAdapter() {
         ArrayList<String> tmp = new ArrayList<>();
-        for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.get(i).getKey();
-            if (arrayMapAsset.get(i).getValue()) {
-                tmp.add(string);
-            }
+        for (int i=0; i<currentAssets.size(); i++) {
+                tmp.add(currentAssets.get(i));
         }
+
         paymentItemsAdapter.updateAdapter(tmp);
         listView.invalidate();
     }
 
-    public double calculate() {
-
+    public double calculateNisaab() {
         double certainOuncesOfGold = 3.0857662;
         double nisaabValue = mGoldValue * certainOuncesOfGold;
-        Log.v("Calculation", "nisaab value[" + nisaabValue + "]");
-        double totalAssets = totalAssets();
+        Log.v("Calculation", "nisaab calc, gold[" + mGoldValue + "/oz * 3.0857662] nisaab value[" + nisaabValue + "]");
+        return nisaabValue;
+    }
 
-        if (totalAssets < nisaabValue) {
-            Log.v("Calculation", "not eligible to pay zakat");
-            return 0;
-        }
-        Log.v("Calculation", "can pay zakat");
+    public double calculateAssets() {
+        double totalAssets = totalAssets();
         return totalAssets;
     }
 
@@ -213,26 +165,20 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                 if (!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     if (string.equals("Gold(g)")) {
-                        //Log.v("Rainbow", "we got gold(g)" + actualValue + " mGoldValue " + mGoldValue);
                         double goldCalc = (actualValue / 28.35) * mGoldValue;
-                        Log.v("Calculation", "adding asset " + string + "[" + goldCalc + "]");
+                        Log.v("Calculation", "gold(g|oz)[" + actualValue + "|" +
+                                (actualValue/28.35) + "] goldvalue[ " + mGoldValue + "][adding asset " + string + "[" + goldCalc + "]");
                         total += goldCalc;
 
                     } else if (string.equals("Silver(g)")) {
                         double silverCalc = (actualValue / 28.35) * mSilverValue;
-                        Log.v("Calculation", "adding asset " + string + "[" + silverCalc + "]");
-
+                        Log.v("Calculation", "silver(g|oz)[" + actualValue + "|" +
+                                (actualValue/28.35) + "] silverValue[ " + mSilverValue + "][adding asset " + string + "[" + silverCalc + "]");
                         total += silverCalc;
-
-                        //Log.v("Rainbow", "we got silver(g)" + actualValue);
 
                     } else {
                         total += actualValue;
                         Log.v("Calculation", "adding asset " + string + "[" + actualValue + "]");
-
-                        //Log.v("Rainbow", "Asset " + string + " " + actualValue);
-
-
                     }
                 }
             }
@@ -247,3 +193,74 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    public void setupListeners() {
+        if(paymentItemsAdapter != null) {
+            paymentItemsAdapter.mGoldImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("The price of gold as of " + mGoldCurrentDay + " " +
+                            mGoldCurrentMonth + ", " + mGoldCurrentYear + "\n is " + mGoldValue + "/g")
+                            .setTitle("Gold");
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+            });
+        }
+
+        if (paymentItemsAdapter != null ) {
+            paymentItemsAdapter.mSilverImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                    builder.setMessage("The price of silver as of " + mSilverCurrentDay + " " +
+                            mSilverCurrentMonth + ", " + mSilverCurrentYear + "\n is " + mSilverValue + "/g")
+                            .setTitle("Silver");
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+            });
+        }
+
+    }
+*/

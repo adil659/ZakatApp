@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     LiabilitiesFragment mLiabilitiesFragment;
     CalculateFragment mCalculateFragment;
 
-
+    String dateOfMetalPrices;
     Calendar calendar = Calendar.getInstance();
     Date date = calendar.getTime();
     SimpleDateFormat monthformat = new SimpleDateFormat("MMMM");
@@ -98,9 +98,15 @@ public class MainActivity extends AppCompatActivity {
         String silverUrl = BASE_URL + SILVER + QUESTION_MARK + START_DATE + date1 + AMPERSAND + END_DATE + date1 + // silver API call
                 AMPERSAND + API_KEY;
 
-        Log.v("ApiCall", "date " + date1);
-        makeApiCall(goldUrl); //fetch data how to return value from listener
-        makeApiCall(silverUrl);
+        Log.v("MetalApi", "date " + date1);
+        Log.v("MetalApi", "gold[" + AssetsFragment.mGoldValue + "] silver[" + AssetsFragment.mSilverValue + "]");
+        if(AssetsFragment.mGoldValue == 0 || !dateOfMetalPrices.equals(date1)) {
+            dateOfMetalPrices = date1;
+            makeApiCall(goldUrl); //fetch data how to return value from listener
+        }
+        if (AssetsFragment.mSilverValue == 0 || !dateOfMetalPrices.equals(date1)) {
+            makeApiCall(silverUrl);
+        }
     }
 
     public void setupNavViewListener(NavigationView view) {
@@ -126,17 +132,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickCalculate(View view) {
-
-        double totalAssets = mAssetsFragment.calculate(); // get total assets
+        double nisaabValue = mAssetsFragment.calculateNisaab();
+        double totalAssets = mAssetsFragment.calculateAssets(); // get total assets
         double totalLiabilities = mLiabilitiesFragment.calculate(); // get total liabilities
 
-        if (totalAssets == 0) {
-           mCalculateFragment.calculateResult("No", "0");
+        double netWorth = totalAssets - totalLiabilities;
+        Log.v("Calculation", "netWorth[" + netWorth + "]");
+
+        if(netWorth > nisaabValue) {
+            double zakatToPay = netWorth * 0.025;
+            mCalculateFragment.calculateResult("yes", String.valueOf(zakatToPay), String.valueOf(nisaabValue), String.valueOf(netWorth));
+            Log.v("Calculation", "can pay zakat");
         }
-        else {
-            double amount = totalAssets - totalLiabilities;
-            double zakatToPay = amount * 0.025;
-            mCalculateFragment.calculateResult("yes", String.valueOf(zakatToPay));
+        else{
+            mCalculateFragment.calculateResult("No", "0", String.valueOf(nisaabValue), String.valueOf(netWorth));
+            Log.v("Calculation", "not eligible to pay zakat");
         }
     }
 
