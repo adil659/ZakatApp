@@ -34,7 +34,8 @@ public class PaymentItemsAdapter extends ArrayAdapter {
     ArrayList<String> answerBoxes = new ArrayList<>();
     ImageView mGoldImageView = null;
     ImageView mSilverImageView = null;
-    ArrayList<EditablePair<String, String>> items = new ArrayList<>();
+
+    ArrayList<PaymentItem> items = new ArrayList<>();
 
     double mGoldValue=0;
     double mSilverValue=0;

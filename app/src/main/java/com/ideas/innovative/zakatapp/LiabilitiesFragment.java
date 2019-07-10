@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by adil6 on 2018-11-02.
@@ -30,6 +31,7 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
     PaymentItemsAdapter paymentItemsAdapter;
     ListView listView;
     ArrayList<EditablePair<String, Boolean>> arrayMap;
+    Stack<String> currentItems = new Stack<>();
 
     public LiabilitiesFragment() {
         arrayMap = new ArrayList<>();
@@ -65,6 +67,7 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
         for (int i=0; i<arrayMap.size(); i++) {
             String string = arrayMap.get(i).getKey();
             if (arrayMap.get(i).value) {
+                currentItems.add(string);
                 paymentItemsAdapter.addPayment(string, "");
             }
             if (answers != null) {
@@ -107,11 +110,8 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
 
     public void updateAdapter() {
         ArrayList<String> tmp = new ArrayList<>();
-        for (int i=0; i<arrayMap.size(); i++) {
-            String string = arrayMap.get(i).getKey();
-            if (arrayMap.get(i).getValue()) {
-                tmp.add(string);
-            }
+        for (int i=0; i<currentItems.size(); i++) {
+                tmp.add(currentItems.get(i));
         }
         paymentItemsAdapter.updateAdapter(tmp);
         listView.invalidate();
@@ -128,6 +128,7 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                 for (int i=0; i <arrayMap.size(); i++) {
                     if (arrayMap.get(i).getKey().equals(sel)) {
                         arrayMap.get(i).setValue(true);
+                        currentItems.add(sel);
                     }
                 }
                 paymentItemsAdapter.addAnswers("");
@@ -154,12 +155,10 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
                 String string = arrayMap.get(i).getKey();
                 int pos = paymentItemsAdapter.arrayList.indexOf(string);
                 String value = paymentItemsAdapter.answerBoxes.get(pos);
-                Log.v("Rainbow", "Liability item" + string + " position " + pos) ;
 
                 if(!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     total += actualValue;
-                    //Log.v("Rainbow", "Liability " + string + " " + actualValue);
                     Log.v("Calculation", "adding liability " + string + "[" + actualValue + "]");
 
                 }

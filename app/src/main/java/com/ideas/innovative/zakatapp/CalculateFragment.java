@@ -18,19 +18,26 @@ public class CalculateFragment extends Fragment {
     TextView zakatEligible;
     TextView zakatAmount;
 
+    TextView nisaabAmount;
+    TextView netWorthAmount;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calculate_fragment, container, false);
         zakatEligible = view.findViewById(R.id.zakatEligible);
         zakatAmount = view.findViewById(R.id.zakatAmount);
+        nisaabAmount = view.findViewById(R.id.nisaabValue);
+        netWorthAmount = view.findViewById(R.id.netWorthEditText);
         return view;
     }
 
 
-    public void calculateResult(String eligible, String amount) {
+    public void calculateResult(String eligible, String amount, String nisaab, String netWorth) {
         zakatEligible.setText(eligible);
         zakatAmount.setText("$" + amount);
+        nisaabAmount.setText("$" + nisaab);
+        netWorthAmount.setText("$" + netWorth);
     }
 
 
