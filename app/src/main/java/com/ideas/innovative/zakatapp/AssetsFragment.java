@@ -62,12 +62,15 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     }
 
     private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
-        paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
-        for (int i=0; i<arrayMapAsset.size(); i++) {
-            String string = arrayMapAsset.get(i).getKey();
-            if (arrayMapAsset.get(i).getValue()) {
-                currentAssets.add(string);
-                paymentItemsAdapter.addPayment(string, "");
+        if (paymentItemsAdapter == null) {
+            paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
+
+            for (int i = 0; i < arrayMapAsset.size(); i++) {
+                String string = arrayMapAsset.get(i).getKey();
+                if (arrayMapAsset.get(i).getValue()) {
+                    currentAssets.add(string);
+                    paymentItemsAdapter.addPayment(string, "");
+                }
             }
         }
 
