@@ -1,6 +1,8 @@
 package com.ideas.innovative.zakatapp;
 
 
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.util.Log;
 
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
+        fragmentChangeListener(viewPager);
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager); // setting up adapter for fragments
 
@@ -148,6 +153,18 @@ public class MainActivity extends AppCompatActivity {
             mCalculateFragment.calculateResult("No", "0", String.valueOf(nisaabValue), String.valueOf(netWorth));
             Log.v("Calculation", "not eligible to pay zakat");
         }
+    }
+
+    public void fragmentChangeListener(ViewPager viewPager) {
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                // hide the keyboard in order to avoid getTextBeforeCursor on inactive InputConnection
+                InputMethodManager inputMethodManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                super.onPageSelected(position);
+            }
+        });
     }
 
     private void makeApiCall (final String url) {
