@@ -1,13 +1,18 @@
 package com.ideas.innovative.zakatapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -41,10 +46,37 @@ public class AddNewItemActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String string = arrayList.get(position);
-                Intent intent = new Intent();
-                intent.putExtra("selected", string);
-                setResult(0, intent);
-                finish();
+                if (string.equals("Anything else")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddNewItemActivity.this);
+                    builder.setMessage("hello");
+                    final View layoutView = getLayoutInflater().inflate(R.layout.more_item_dialog_layout, null);
+                    builder.setView(layoutView);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText editText = layoutView.findViewById(R.id.customZakatItem);
+                            String string1 = editText.getText().toString();
+                            Intent intent1 = new Intent();
+                            intent1.putExtra("selected", string1);
+                            setResult(0, intent1);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+                else {
+                    Intent intent = new Intent();
+                    intent.putExtra("selected", string);
+                    setResult(0, intent);
+                    finish();
+                }
             }
         });
     }
