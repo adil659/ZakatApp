@@ -123,10 +123,10 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                 //arrayMapAsset.add(new EditablePair<String, Boolean>(sel, true));
                 for (int i=0; i <arrayMapAsset.size(); i++) {
                     if (arrayMapAsset.get(i).getKey().equals(sel)) {
-                        currentAssets.add(sel);
                         arrayMapAsset.get(i).setValue(true);
                     }
                 }
+                currentAssets.add(sel);
                 paymentItemsAdapter.addAnswers("");
                 updateAdapter();
             }
@@ -158,10 +158,9 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     public double totalAssets() {
         int total =0;
         for (int i=0; i<paymentItemsAdapter.getArrayListSize(); i++) {
-            if(arrayMapAsset.get(i).getValue()) {
-                String string = arrayMapAsset.get(i).getKey();
-                int pos = paymentItemsAdapter.arrayList.indexOf(string);
-                String value  = paymentItemsAdapter.answerBoxes.get(pos);
+            if(!paymentItemsAdapter.answerBoxes.get(i).isEmpty()) {
+                String string = paymentItemsAdapter.arrayList.get(i);
+                String value  = paymentItemsAdapter.answerBoxes.get(i);
                 if (!value.isEmpty()) {
                     int actualValue = Integer.valueOf(value);
                     if (string.equals("Gold(g)")) {
