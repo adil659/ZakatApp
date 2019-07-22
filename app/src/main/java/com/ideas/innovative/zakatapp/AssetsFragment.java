@@ -39,6 +39,7 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
 // TODO put faq items in openable tabs
 // TODO setup reminder system for when user wants to pay zakat every year
 // TODO make setting to use gold or silver nisab, or use lowest or highest value
+// TODO maybe make a homepage, options to calculate zakat, view previous calculations, see previous gold and silver prices on different days
 
 
 
