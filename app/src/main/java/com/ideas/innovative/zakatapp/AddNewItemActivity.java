@@ -48,7 +48,6 @@ public class AddNewItemActivity extends AppCompatActivity {
                 String string = arrayList.get(position);
                 if (string.equals("Anything else")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddNewItemActivity.this);
-                    builder.setMessage("hello");
                     final View layoutView = getLayoutInflater().inflate(R.layout.more_item_dialog_layout, null);
                     builder.setView(layoutView);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
