@@ -61,10 +61,10 @@ public class PaymentItemsAdapter extends ArrayAdapter {
 
         rowView.findViewById(R.id.info_image).setVisibility(View.INVISIBLE);
 
-
+        boolean isGoldOrSilverBox = false;
         switch(arrayList.get(position)) {
             case "Gold(g)":
-
+                isGoldOrSilverBox = true;
                 mGoldImageView = rowView.findViewById(R.id.info_image);
                 mGoldImageView.setVisibility(View.VISIBLE);
                 mGoldImageView.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +82,7 @@ public class PaymentItemsAdapter extends ArrayAdapter {
                 });
                 break;
             case "Silver(g)":
+                isGoldOrSilverBox = true;
                 mSilverImageView = rowView.findViewById(R.id.info_image);
                 mSilverImageView.setVisibility(View.VISIBLE);
                 mSilverImageView.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +104,9 @@ public class PaymentItemsAdapter extends ArrayAdapter {
 
         final EditTextListView editTextListView = rowView.findViewById(R.id.answerBox);
         editTextListView.setPosition(position);
-
+        if (!isGoldOrSilverBox) {
+            editTextListView.setCompoundDrawablesWithIntrinsicBounds(new TextDrawable("$", editTextListView.getHeight()), null, null, null);
+        }
         editTextListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
