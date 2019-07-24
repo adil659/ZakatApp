@@ -1,4 +1,4 @@
-package com.ideas.innovative.zakatapp;
+package com.ideas.innovative.zakatapp.DataStructure;
 
 import android.content.Context;
 import android.util.AttributeSet;

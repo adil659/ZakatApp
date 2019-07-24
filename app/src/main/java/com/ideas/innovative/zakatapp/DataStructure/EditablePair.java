@@ -1,4 +1,4 @@
-package com.ideas.innovative.zakatapp;
+package com.ideas.innovative.zakatapp.DataStructure;
 
 import android.util.Pair;
 
@@ -8,8 +8,8 @@ import android.util.Pair;
 
 public class EditablePair<K, V>  {
 
-    K key;
-    V value;
+    public K key;
+    public V value;
 
     public EditablePair(K first, V second) {
         key = first;

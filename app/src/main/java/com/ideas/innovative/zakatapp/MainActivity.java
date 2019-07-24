@@ -219,12 +219,9 @@ public class MainActivity extends AppCompatActivity {
                             //Log.v("Are we here ", ", did we make it here? ");
                         }
                         else {
-                            //Log.v("Which call", "url succeed [" + url + "] price [" + mDataset.dataset.data.get(0).get(1) + "]");
                             if (url.contains("GOLD")) {
                                 Log.v("MetalApi", "gold succeeded price[" + mDataset.dataset.data.get(0).get(1) + "]");
                                 mAssetsFragment.setGoldValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
-                                String.valueOf(mDataset.dataset.data.get(0).get(1));
-                                //Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 String end_date = mDataset.dataset.end_date;
                                 Date newDate = null;
                                 try {
@@ -239,10 +236,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else if (url.contains("SILVER")){
                                 Log.v("MetalApi", "silver succeeded price[" + mDataset.dataset.data.get(0).get(1) + "]");
-                                //Log.v("Are we here ", " Silver value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 mAssetsFragment.setSilverValue(String.valueOf(mDataset.dataset.data.get(0).get(1)));
-                                String.valueOf(mDataset.dataset.data.get(0).get(1));
-                                Log.v("Are we here ", " Gold value " + String.valueOf(mDataset.dataset.data.get(0).get(1)));
                                 String end_date = mDataset.dataset.end_date;
                                 try {
                                     Date newDate = simpleDateFormat.parse(end_date);

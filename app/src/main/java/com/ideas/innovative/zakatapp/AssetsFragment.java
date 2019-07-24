@@ -1,21 +1,17 @@
 package com.ideas.innovative.zakatapp;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.ideas.innovative.zakatapp.GoldValueAPI.GoldDataSet;
+import com.ideas.innovative.zakatapp.DataStructure.EditablePair;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -32,6 +28,17 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     Stack<String> currentAssets = new Stack<>();
     static double mGoldValue=0;
     static double mSilverValue=0;
+
+    public static double GRAM_TO_OUNCE_DIVIDER = 28.34952;
+
+    public static double OUNCES_OF_GOLD_FOR_NISAB = 3;
+    public static double OUNCES_OF_SILVER_FOR_NISAB = 21;
+
+
+// TODO make feature to remove payment items
+// TODO put faq items in openable tabs
+// TODO setup reminder system for when user wants to pay zakat every year
+// TODO make setting to use gold or silver nisab, or use lowest or highest value
 
 
 
@@ -56,12 +63,12 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.liability_fragment,container,false);
         listView = view.findViewById(R.id.listView);
-        setupLiabilitiesAdapter(listView);
+        setupAssetsAdapter(listView);
 
         return view;
     }
 
-    private void setupLiabilitiesAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
+    private void setupAssetsAdapter(ListView listView) {    // YOU CAN ADD MORE PAGES FROM HERE
         if (paymentItemsAdapter == null) {
             paymentItemsAdapter = new PaymentItemsAdapter(getContext(), R.layout.payment_item);
 
@@ -93,7 +100,6 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == paymentItemsAdapter.getArrayListSize()) {
-                    Log.v ("Hello", "1");
                     Intent intent = new Intent(getContext(), AddNewItemActivity.class);
                     ArrayList<String> tmp = new ArrayList<>();
                     for (int i=0; i<arrayMapAsset.size(); i++) {
@@ -104,16 +110,9 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
                     }
                     intent.putExtra("items", tmp);
                     startActivityForResult(intent, 1);
-
-                    setUpAddNewItem();
-
                 }
             }
         });
-    }
-
-    public void setUpAddNewItem() {
-
     }
 
     @Override
@@ -122,7 +121,6 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         if (requestCode ==1 && resultCode ==0 ) {
             if (data != null) {
                 String sel = data.getStringExtra("selected");
-                Log.v("Liability", "updateREsult " + sel);
                 //arrayMapAsset.add(new EditablePair<String, Boolean>(sel, true));
                 for (int i=0; i <arrayMapAsset.size(); i++) {
                     if (arrayMapAsset.get(i).getKey().equals(sel)) {
@@ -147,9 +145,8 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     }
 
     public double calculateNisaab() {
-        double certainOuncesOfGold = 3.0857662;
-        double nisaabValue = mGoldValue * certainOuncesOfGold;
-        Log.v("Calculation", "nisaab calc, gold[" + mGoldValue + "/oz * 3.0857662] nisaab value[" + nisaabValue + "]");
+        double nisaabValue = mGoldValue * OUNCES_OF_GOLD_FOR_NISAB;
+        Log.v("Calculation", "nisaab calc, gold[" + mGoldValue + "/oz * 3] nisaab value[" + nisaabValue + "]");
         return nisaabValue;
     }
 
@@ -159,23 +156,23 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
     }
 
     public double totalAssets() {
-        int total =0;
+        double total =0;
         for (int i=0; i<paymentItemsAdapter.getArrayListSize(); i++) {
             if(!paymentItemsAdapter.answerBoxes.get(i).isEmpty()) {
                 String string = paymentItemsAdapter.arrayList.get(i);
                 String value  = paymentItemsAdapter.answerBoxes.get(i);
                 if (!value.isEmpty()) {
-                    int actualValue = Integer.valueOf(value);
+                    double actualValue = Double.valueOf(value);
                     if (string.equals("Gold(g)")) {
-                        double goldCalc = (actualValue / 28.35) * mGoldValue;
+                        double goldCalc = (actualValue / GRAM_TO_OUNCE_DIVIDER) * mGoldValue;
                         Log.v("Calculation", "gold(g|oz)[" + actualValue + "|" +
-                                (actualValue/28.35) + "] goldvalue[ " + mGoldValue + "][adding asset " + string + "[" + goldCalc + "]");
+                                (actualValue/GRAM_TO_OUNCE_DIVIDER) + "] goldvalue[ " + mGoldValue + "][adding asset " + string + "[" + goldCalc + "]");
                         total += goldCalc;
 
                     } else if (string.equals("Silver(g)")) {
-                        double silverCalc = (actualValue / 28.35) * mSilverValue;
+                        double silverCalc = (actualValue / GRAM_TO_OUNCE_DIVIDER) * mSilverValue;
                         Log.v("Calculation", "silver(g|oz)[" + actualValue + "|" +
-                                (actualValue/28.35) + "] silverValue[ " + mSilverValue + "][adding asset " + string + "[" + silverCalc + "]");
+                                (actualValue/GRAM_TO_OUNCE_DIVIDER) + "] silverValue[ " + mSilverValue + "][adding asset " + string + "[" + silverCalc + "]");
                         total += silverCalc;
 
                     } else {
