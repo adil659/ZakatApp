@@ -22,6 +22,10 @@
         <activity android:name=".AddNewItemActivity"/>
 
         <activity android:name=".FrequentlyAskedQuestions"/>
+
+        <activity android:name=".CalendarActivity"/>
+
     </application>
+
 
 </manifest>

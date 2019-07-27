@@ -122,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_faq:
                         Intent intent = new Intent(getApplicationContext(), FrequentlyAskedQuestions.class);
                         startActivity(intent);
+                        return true;
+                    case R.id.nav_calendar:
+                        Intent intent1 = new Intent(getApplicationContext(), CalendarActivity.class);
+                        startActivity(intent1);
+                        return true;
                 }
                 return true;
             }
