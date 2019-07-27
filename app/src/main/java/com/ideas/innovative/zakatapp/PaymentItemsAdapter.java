@@ -25,8 +25,6 @@ public class PaymentItemsAdapter extends ArrayAdapter {
     ArrayList<String> answerBoxes = new ArrayList<>();
     ImageView mGoldImageView = null;
     ImageView mSilverImageView = null;
-    ImageView mInvestmentImageView;
-    ImageView mSharesImageView;
 
     ArrayList<PaymentItem> items = new ArrayList<>();
 
@@ -96,40 +94,6 @@ public class PaymentItemsAdapter extends ArrayAdapter {
                                 mSilverCurrentMonth + ", " + mSilverCurrentYear + "\n is " + mSilverValue + "/g")
                                 .setTitle("Silver");
 
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-
-                    }
-                });
-                break;
-            case "Investment Properties":
-                mInvestmentImageView = rowView.findViewById(R.id.info_image);
-                mInvestmentImageView.setVisibility(View.VISIBLE);
-                mInvestmentImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                        builder.setMessage("Zakat is paid on the value of investment properties if purchased for resale. However, it is paid on the income from the property for rental purposes.")
-                                .setTitle("Investment Properties");
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-
-                    }
-                });
-                break;
-            case "Shares":
-                mSharesImageView = rowView.findViewById(R.id.info_image);
-                mSharesImageView.setVisibility(View.VISIBLE);
-                mSharesImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                        builder.setMessage("In the case of shares being purchased with the intention of capital gain, Zakat will be paid on their market value. \n" +
-                                "\n" +
-                                "However, if shares were purchased with the intention of receiving the annual dividend, then one is allowed to subtract the value of those items which are exempted from Zakat. The percentage of non-Zakat-able assets can be obtained from the company’s annual report.")
-                                .setTitle("Shares");
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
 
