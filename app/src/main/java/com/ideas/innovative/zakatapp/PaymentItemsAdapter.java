@@ -102,7 +102,7 @@ public class PaymentItemsAdapter extends ArrayAdapter {
                     }
                 });
                 break;
-            case "Investment Properties":
+            case "Investment\nProperties":
                 mInvestmentImageView = rowView.findViewById(R.id.info_image);
                 mInvestmentImageView.setVisibility(View.VISIBLE);
                 mInvestmentImageView.setOnClickListener(new View.OnClickListener() {

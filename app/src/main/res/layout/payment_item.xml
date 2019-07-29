@@ -9,12 +9,12 @@
 
     <ImageView
         android:id="@+id/info_image"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="@+id/answerBox"
         app:layout_constraintEnd_toEndOf="parent"

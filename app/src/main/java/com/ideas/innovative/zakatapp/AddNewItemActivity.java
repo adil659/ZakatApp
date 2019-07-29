@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by adil6 on 2018-11-07.
  */
 
-public class AddNewItemActivity extends AppCompatActivity {
+public class  AddNewItemActivity extends AppCompatActivity {
 
     ArrayList<String> arrayList;
     @Override
@@ -54,11 +55,17 @@ public class AddNewItemActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             EditText editText = layoutView.findViewById(R.id.customZakatItem);
-                            String string1 = editText.getText().toString();
-                            Intent intent1 = new Intent();
-                            intent1.putExtra("selected", string1);
-                            setResult(0, intent1);
-                            finish();
+                            String string1 = editText.getText().toString().trim();
+                            string1 = string1.substring(0, 1).toUpperCase() + string1.substring(1);
+                            if(string1.length() == 0) {
+                                Toast.makeText(getApplicationContext(), "Please fill out the required field", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Intent intent1 = new Intent();
+                                intent1.putExtra("selected", string1);
+                                setResult(0, intent1);
+                                finish();
+                            }
                         }
                     });
                     builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

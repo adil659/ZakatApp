@@ -50,7 +50,7 @@ public class AssetsFragment extends android.support.v4.app.Fragment {
         arrayMapAsset.add(new EditablePair<>("Silver(g)", true));
         arrayMapAsset.add(new EditablePair<>("Shares", false));
         arrayMapAsset.add(new EditablePair<>("Business Assets", false));
-        arrayMapAsset.add(new EditablePair<>("Investment Properties", false));
+        arrayMapAsset.add(new EditablePair<>("Investment\nProperties", false));
         arrayMapAsset.add(new EditablePair<>("Anything else", false));
     }
 
