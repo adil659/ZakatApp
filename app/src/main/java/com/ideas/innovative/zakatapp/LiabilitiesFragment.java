@@ -36,7 +36,7 @@ public class LiabilitiesFragment extends android.support.v4.app.Fragment {
         arrayMap.add(new EditablePair<>("Loan", false));
         arrayMap.add(new EditablePair<>("Bonds", false));
         arrayMap.add(new EditablePair<>("Business Liabilities", false));
-        arrayMap.add(new EditablePair<>("Anything else", false));
+        arrayMap.add(new EditablePair<>("Other", false));
     }
 
     @Override

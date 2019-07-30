@@ -47,7 +47,7 @@ public class  AddNewItemActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String string = arrayList.get(position);
-                if (string.equals("Anything else")) {
+                if (string.equals("Other")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddNewItemActivity.this);
                     final View layoutView = getLayoutInflater().inflate(R.layout.more_item_dialog_layout, null);
                     builder.setView(layoutView);
@@ -56,13 +56,12 @@ public class  AddNewItemActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             EditText editText = layoutView.findViewById(R.id.customZakatItem);
                             String string1 = editText.getText().toString().trim();
-                            string1 = string1.substring(0, 1).toUpperCase() + string1.substring(1);
-                            if(string1.length() == 0) {
+                            if(string1.isEmpty()) {
                                 Toast.makeText(getApplicationContext(), "Please fill out the required field", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 Intent intent1 = new Intent();
-                                intent1.putExtra("selected", string1);
+                                intent1.putExtra("selected", string1.substring(0, 1).toUpperCase() + string1.substring(1));
                                 setResult(0, intent1);
                                 finish();
                             }
